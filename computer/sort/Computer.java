@@ -43,18 +43,6 @@ public class Computer implements Comparable<Computer> {
 
     @Override
     public int compareTo(Computer o) {
-        if (this.cpu > o.cpu) {
-            return -1;
-        } else if (this.cpu == o.cpu) {
-            if (this.memory > o.memory) {
-                return -1;
-            } else if (this.memory == o.memory) {
-                return this.name.compareTo(o.name);
-            } else {
-                return 1;
-            }
-        } else {
-            return 1;
-        }
+        return this.name.compareTo(o.name);
     }
 }
