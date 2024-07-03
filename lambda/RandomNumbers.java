@@ -1,6 +1,7 @@
 package lambda;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -11,39 +12,37 @@ public class RandomNumbers {
     static Random random = new Random();
 
     public static void main(String[] args) {
-        Supplier<List<Integer>> supplier = () -> {
-            List<Integer> list = new ArrayList<>();
-            for (int i = 0; i < 20; i++) {
-                list.add(random.nextInt(101));
-            }
-            return list;
-        };
-
-        Consumer<Integer> consumer = i -> {
-            System.out.print(i + " ");
-        };
-
-        Predicate<Integer> predicate = i -> i % 2 == 0;
 
         List<Integer> numbers = supplier.get();
-        for (Integer number : numbers) {
-            consumer.accept(number);
-        }
+        printList(numbers, consumer);
         System.out.println();
         System.out.println("przefiltrowana lista");
-        List<Integer> filteredList = filterByPredicate(numbers, predicate);
-        for (Integer i : filteredList) {
-            consumer.accept(i);
+        filterByPredicate(numbers, i -> i % 13 != 0);
+        printList(numbers, consumer);
+    }
+
+    private static <T> void filterByPredicate(List<T> list, Predicate<T> predicate) {
+        Iterator<T> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            if (predicate.test(iterator.next())) {
+                iterator.remove();
+            }
         }
     }
 
-    private static <T> List<T> filterByPredicate(List<T> list, Predicate<T> predicate) {
-        List<T> result = new ArrayList<>();
-        for (T t : list) {
-            if (predicate.test(t)) {
-                result.add(t);
-            }
+    static Supplier<List<Integer>> supplier = () -> {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            list.add(random.nextInt(101));
         }
-        return result;
+        return list;
+    };
+
+    static <T> void printList(List<T> list, Consumer<T> consumer) {
+        for (T t : list) {
+            consumer.accept(t);
+        }
     }
+
+    static Consumer<Integer> consumer = i -> System.out.print(i + " ");
 }
